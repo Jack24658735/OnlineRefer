@@ -17,7 +17,7 @@ import torchvision.transforms as T
 import matplotlib.pyplot as plt
 import os
 import cv2
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 import math
 import torch.nn.functional as F
 import json
@@ -96,19 +96,22 @@ def main(args):
 
     start_time = time.time()
     print('Start inference')
-    for i in range(thread_num):
-        if i == thread_num - 1:
-            sub_video_list = video_list[i * per_thread_video_num:]
-        else:
-            sub_video_list = video_list[i * per_thread_video_num: (i + 1) * per_thread_video_num]
-        p = mp.Process(target=sub_processor, args=(lock, i, args, data,
-                                                   save_path_prefix, save_visualize_path_prefix,
-                                                   img_folder, sub_video_list))
-        p.start()
-        processes.append(p)
+    ### Note: workaround to avoid the multi-process issue...
+    sub_video_list = video_list[0:]
+    sub_processor(lock, 0, args, data, save_path_prefix, save_visualize_path_prefix, img_folder, sub_video_list)
+    # for i in range(thread_num):
+    #     if i == thread_num - 1:
+    #         sub_video_list = video_list[i * per_thread_video_num:]
+    #     else:
+    #         sub_video_list = video_list[i * per_thread_video_num: (i + 1) * per_thread_video_num]
+    #     p = mp.Process(target=sub_processor, args=(lock, i, args, data,
+    #                                                save_path_prefix, save_visualize_path_prefix,
+    #                                                img_folder, sub_video_list))
+    #     p.start()
+    #     processes.append(p)
 
-    for p in processes:
-        p.join()
+    # for p in processes:
+    #     p.join()
 
     end_time = time.time()
     total_time = end_time - start_time
@@ -265,6 +268,12 @@ def sub_processor(lock, pid, args, data, save_path_prefix, save_visualize_path_p
                         # draw boxes, color = color_list[i % len(color_list)]
                         xmin, ymin, xmax, ymax = draw_boxes[0]
                         draw.rectangle(((xmin, ymin), (xmax, ymax)), outline=tuple(our_colors[0]), width=2)
+
+                        text = exp
+                        font_path = "/home/liujack/RVOS/OnlineRefer/fonts/OpenSans-Regular.ttf"
+                        font = ImageFont.truetype(font_path, 30) # change the '30' to any size you want
+                        position = (10, 10)
+                        draw.text(position, text, (255, 0, 0), font=font)
 
                         # draw inter reference point
                         # ref_points = all_pred_ref_points[t].unsqueeze(0).detach().cpu().tolist()

@@ -102,11 +102,11 @@ def get_args_parser():
     # ['ytvos', 'davis', 'a2d', 'jhmdb', 'refcoco', 'refcoco+', 'refcocog', 'all']
     # 'all': using the three ref datasets for pretraining
     parser.add_argument('--dataset_file', default='ytvos', help='Dataset name') 
-    parser.add_argument('--coco_path', type=str, default='/data/Dataset/coco')
-    parser.add_argument('--ytvos_path', type=str, default='/data/Dataset/ref-youtube-vos')
-    parser.add_argument('--davis_path', type=str, default='/data/Dataset/ref-davis')
-    parser.add_argument('--a2d_path', type=str, default='/data/Dataset/a2d_sentences')
-    parser.add_argument('--jhmdb_path', type=str, default='/data/Dataset/jhmdb_sentences')
+    parser.add_argument('--coco_path', type=str, default='data/coco')
+    parser.add_argument('--ytvos_path', type=str, default='data/ref-youtube-vos')
+    parser.add_argument('--davis_path', type=str, default='data/ref-davis')
+    parser.add_argument('--a2d_path', type=str, default='data/a2d_sentences')
+    parser.add_argument('--jhmdb_path', type=str, default='data/jhmdb_sentences')
     parser.add_argument('--max_skip', default=3, type=int, help="max skip frame number")
     parser.add_argument('--max_size', default=640, type=int, help="max size for the frame")
     parser.add_argument('--binary', action='store_true')
@@ -148,6 +148,23 @@ def get_args_parser():
     parser.add_argument('--num_clips', default=1, type=int,
                         help="Number of clips for training, default=1 for online mode")
 
+    # SAM setting
+    parser.add_argument('--use_SAM', action='store_true')
+
+    # UVC setting
+    parser.add_argument('--use_UVC', action='store_true')
+    # TODO: need to modify
+    parser.add_argument("--uvc_checkpoint_dir",type = str,
+                        default = "/home/liujack/RVOS/UVC/weights/checkpoint_latest.pth.tar",
+                        help = "UVC checkpoints path")
+    parser.add_argument("--temp", type = float,default = 1,
+                        help = "softmax temperature")
+    parser.add_argument("--topk", type = int, default = 5,
+                        help = "accumulate label from top k neighbors")
+    parser.add_argument("-s", "--scale_size", type = int, nargs = "+",
+                        help = "scale size, a single number for shorter edge, or a pair for height and width")
+    parser.add_argument("--prop_thres", type = float, default = 0.0,
+                        help = "thres to decide prop. or not")
     return parser
 
 

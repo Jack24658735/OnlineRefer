@@ -128,15 +128,15 @@ class OnlineRefer(nn.Module):
 
         # Build Text Encoder
 
-        # self.tokenizer = RobertaTokenizerFast.from_pretrained('roberta-base')
-        # self.text_encoder = RobertaModel.from_pretrained('roberta-base')
+        self.tokenizer = RobertaTokenizerFast.from_pretrained('roberta-base')
+        self.text_encoder = RobertaModel.from_pretrained('roberta-base')
 
         # The below two lines needs to download models from Huggingface (https://huggingface.co/roberta-base/tree/main)
         # If not, please use the above two lines
-        self.tokenizer = RobertaTokenizerFast.from_pretrained('/data/wudongming/referformer/roberta_base/',
-                                                              local_files_only=True)
-        self.text_encoder = RobertaModel.from_pretrained('/data/wudongming/referformer/roberta_base/',
-                                                         local_files_only=True)
+        # self.tokenizer = RobertaTokenizerFast.from_pretrained('/data/wudongming/referformer/roberta_base/',
+        #                                                       local_files_only=True)
+        # self.text_encoder = RobertaModel.from_pretrained('/data/wudongming/referformer/roberta_base/',
+        #                                                  local_files_only=True)
 
         if freeze_text_encoder:
             for p in self.text_encoder.parameters():
